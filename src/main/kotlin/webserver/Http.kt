@@ -48,6 +48,7 @@ fun notFoundHandler(req: Request) : Response
 
 fun restrictedPageHandler(req: Request): Response
   = Response(Status.OK, "This is very secret.")
+
 //Maps directories to their respective handler functions
 val mapping : Map<String, HttpHandler> = mapOf(
   "/" to ::homepageHandler,
@@ -57,19 +58,12 @@ val mapping : Map<String, HttpHandler> = mapOf(
 )
 
 fun configureRoutes(req: Request) : HttpHandler
+  //Matches directory to its handler
   = mapping.getOrDefault(path(req.url), ::notFoundHandler)
 
-fun route(req:Request) : Response {
+fun route(req:Request) : Response
   //Takes in a request and passes it through the matching handler
-  //If there is no matching handler, return Status.NOT_FOUND
-  val path = path(req.url)
-
-  return if (mapping.containsKey(path)) {
-    (mapping[path]!!.invoke(req))
-  } else {
-    Response(Status.NOT_FOUND)
-  }
-}
+  = configureRoutes(req).invoke(req)
 
 fun requireToken(token: String, wrapped: HttpHandler): HttpHandler {
   fun newHandler(req: Request): Response {
