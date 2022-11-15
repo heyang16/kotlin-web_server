@@ -14,18 +14,18 @@ enum class Status(val code: Int) {
   NOT_FOUND(404)
 }
 
-fun helloHandler(req: Request) : Response {
+fun helloHandler(req: Request): Response {
   // Given a url as a request, return a suitable welcome message
 
-  val rp = Response(Status.OK, "Hello, World") // Default response
+  val rp = Response(Status.OK, "Hello, World!") // Default response
   val pm = queryParams(req.url).toMap()
 
-  //Changes the name if specified
+  // Changes the name if specified
   if (pm.containsKey("name")) {
     val name = pm["name"]
     rp.body = "Hello, $name!"
   }
-  //Changes to upper case if specified
+  // Changes to upper case if specified
   if (pm.containsKey("style")) {
     if (pm["style"] == "shouting") {
       rp.body = rp.body.uppercase()
@@ -35,33 +35,37 @@ fun helloHandler(req: Request) : Response {
   return rp
 }
 
-fun homepageHandler(req: Request) : Response
-  = Response(Status.OK, "This is Imperial.")
+fun homepageHandler(req: Request): Response =
+  Response(Status.OK, "This is Imperial.")
 
-fun doCHandler(req: Request) : Response
-  = Response(Status.OK, "This is DoC.")
+fun doCHandler(req: Request): Response =
+  Response(Status.OK, "This is DoC.")
 
-fun notFoundHandler(req: Request) : Response
-  = Response(Status.NOT_FOUND)
+fun notFoundHandler(req: Request): Response =
+  Response(Status.NOT_FOUND)
 
-fun restrictedPageHandler(req: Request): Response
-  = Response(Status.OK, "This is very secret.")
+fun restrictedPageHandler(req: Request): Response =
+  Response(Status.OK, "This is very secret.")
 
-//Maps directories to their respective handler functions
-val mapping : Map<String, HttpHandler> = mapOf(
+// Maps directories to their respective handler functions
+val mapping: Map<String, HttpHandler> = mapOf(
   "/" to ::homepageHandler,
   "/computing" to ::doCHandler,
   "/say-hello" to ::helloHandler,
   "/exam-marks" to requireToken("password1", ::restrictedPageHandler)
 )
 
-fun configureRoutes(req: Request, m : Map<String, HttpHandler> = mapping) : HttpHandler
-  //Matches directory to its handler
-  = m.getOrDefault(path(req.url), ::notFoundHandler)
+fun configureRoutes(
+  req: Request,
+  m: Map<String, HttpHandler> = mapping
+): HttpHandler =
 
-fun route(req: Request) : Response
-  //Takes in a request and passes it through the matching handler
-  = configureRoutes(req).invoke(req)
+// Matches directory to its handler
+  m.getOrDefault(path(req.url), ::notFoundHandler)
+
+fun route(req: Request): Response =
+// Takes in a request and passes it through the matching handler
+  configureRoutes(req).invoke(req)
 
 fun requireToken(token: String, wrapped: HttpHandler): HttpHandler {
   // Modifies a Handler to require an authenticator token
@@ -74,6 +78,3 @@ fun requireToken(token: String, wrapped: HttpHandler): HttpHandler {
   }
   return ::newHandler
 }
-
-
-
