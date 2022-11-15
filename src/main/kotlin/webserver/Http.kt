@@ -1,7 +1,5 @@
 package webserver
 
-import java.util.*
-
 // provided files
 
 class Request(val url: String, val authToken: String = "")
@@ -25,12 +23,12 @@ fun helloHandler(req: Request) : Response {
   //Changes the name if specified
   if (pm.containsKey("name")) {
     val name = pm["name"]
-    rp.body = "Hello, ".plus(name).plus('!')
+    rp.body = "Hello, $name!"
   }
   //Changes to upper case if specified
   if (pm.containsKey("style")) {
     if (pm["style"] == "shouting") {
-      rp.body = rp.body.uppercase().plus('!')
+      rp.body = rp.body.uppercase()
     }
   }
 
@@ -57,15 +55,16 @@ val mapping : Map<String, HttpHandler> = mapOf(
   "/exam-marks" to requireToken("password1", ::restrictedPageHandler)
 )
 
-fun configureRoutes(req: Request) : HttpHandler
+fun configureRoutes(req: Request, m : Map<String, HttpHandler> = mapping) : HttpHandler
   //Matches directory to its handler
-  = mapping.getOrDefault(path(req.url), ::notFoundHandler)
+  = m.getOrDefault(path(req.url), ::notFoundHandler)
 
-fun route(req:Request) : Response
+fun route(req: Request) : Response
   //Takes in a request and passes it through the matching handler
   = configureRoutes(req).invoke(req)
 
 fun requireToken(token: String, wrapped: HttpHandler): HttpHandler {
+  // Modifies a Handler to require an authenticator token
   fun newHandler(req: Request): Response {
     return if (req.authToken == token) {
       wrapped(req)
