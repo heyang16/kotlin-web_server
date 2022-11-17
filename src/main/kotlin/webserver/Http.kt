@@ -35,15 +35,19 @@ fun helloHandler(req: Request): Response {
   return rp
 }
 
+@Suppress("UNUSED_PARAMETER")
 fun homepageHandler(req: Request): Response =
   Response(Status.OK, "This is Imperial.")
 
+@Suppress("UNUSED_PARAMETER")
 fun doCHandler(req: Request): Response =
   Response(Status.OK, "This is DoC.")
 
+@Suppress("UNUSED_PARAMETER")
 fun notFoundHandler(req: Request): Response =
   Response(Status.NOT_FOUND)
 
+@Suppress("UNUSED_PARAMETER")
 fun restrictedPageHandler(req: Request): Response =
   Response(Status.OK, "This is very secret.")
 

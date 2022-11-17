@@ -32,5 +32,6 @@ fun queryParams(url: String): List<Pair<String, String>> {
 
 // http handlers for a particular website...
 
+@Suppress("UNUSED_PARAMETER")
 fun homePageHandler(request: Request): Response =
   Response(Status.OK, "This is Imperial.")
