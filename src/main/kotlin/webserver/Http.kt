@@ -48,7 +48,7 @@ fun restrictedPageHandler(req: Request): Response =
   Response(Status.OK, "This is very secret.")
 
 // Maps directories to their respective handler functions
-val mapping: Map<String, HttpHandler> = mapOf(
+val routeMap: Map<String, HttpHandler> = mapOf(
   "/" to ::homepageHandler,
   "/computing" to ::doCHandler,
   "/say-hello" to ::helloHandler,
@@ -57,7 +57,7 @@ val mapping: Map<String, HttpHandler> = mapOf(
 
 fun configureRoutes(
   req: Request,
-  m: Map<String, HttpHandler> = mapping
+  m: Map<String, HttpHandler> = routeMap
 ): HttpHandler =
 
 // Matches directory to its handler
