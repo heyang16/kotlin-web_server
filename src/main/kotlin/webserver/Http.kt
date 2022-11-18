@@ -59,17 +59,15 @@ val routeMap: Map<String, HttpHandler> = mapOf(
   "/exam-marks" to requireToken("password1", ::restrictedPageHandler)
 )
 
-fun configureRoutes(
-  req: Request,
-  m: Map<String, HttpHandler> = routeMap
-): HttpHandler =
-
-// Matches directory to its handler
-  m.getOrDefault(path(req.url), ::notFoundHandler)
+fun configureRoutes(m: Map<String, HttpHandler> = routeMap): HttpHandler =
+// Takes in a mapping of paths to their respective handler, returns the handler
+  { req: Request ->
+    m.getOrDefault(path(req.url), ::notFoundHandler).invoke(req)
+  }
 
 fun route(req: Request): Response =
 // Takes in a request and passes it through the matching handler
-  configureRoutes(req).invoke(req)
+  configureRoutes().invoke(req)
 
 fun requireToken(token: String, wrapped: HttpHandler): HttpHandler =
   // Modifies a Handler to require an authenticator token
