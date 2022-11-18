@@ -151,7 +151,7 @@ class WebServerTest {
   @Test
   fun `calling configureRoutes() returns app which can handle requests`() {
 
-    val app: HttpHandler = { r -> configureRoutes(r).invoke(r) }
+    val app: HttpHandler = { r -> route(r) }
 
     assertEquals(
       "This is Imperial.",
@@ -167,7 +167,7 @@ class WebServerTest {
   @Test
   fun `filter prevents access to protected resources `() {
 
-    val app: HttpHandler = { r -> configureRoutes(r).invoke(r) }
+    val app: HttpHandler = { r -> route(r) }
 
     val request = Request("http://www.imperial.ac.uk/exam-marks")
     assertEquals(Status.FORBIDDEN, app(request).status)
@@ -176,7 +176,7 @@ class WebServerTest {
   @Test
   fun `filter allows access to protected resources with token`() {
 
-    val app: HttpHandler = { r -> configureRoutes(r).invoke(r) }
+    val app: HttpHandler = { r -> route(r) }
 
     val request = Request("http://www.imperial.ac.uk/exam-marks", "password1")
 
