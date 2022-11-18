@@ -71,14 +71,12 @@ fun route(req: Request): Response =
 // Takes in a request and passes it through the matching handler
   configureRoutes(req).invoke(req)
 
-fun requireToken(token: String, wrapped: HttpHandler): HttpHandler {
+fun requireToken(token: String, wrapped: HttpHandler): HttpHandler =
   // Modifies a Handler to require an authenticator token
-  fun newHandler(req: Request): Response {
-    return if (req.authToken == token) {
+  { req ->
+    if (req.authToken == token) {
       wrapped(req)
     } else {
       Response(Status.FORBIDDEN)
     }
   }
-  return ::newHandler
-}
